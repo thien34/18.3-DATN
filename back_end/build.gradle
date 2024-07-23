@@ -2,13 +2,14 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.0'
     id 'io.spring.dependency-management' version '1.1.5'
+    id "org.sonarqube" version "5.0.0.4638"
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = JavaLanguageVersion.of(17)
 }
 
 configurations {
@@ -22,7 +23,7 @@ configurations {
 
 ext {
     profiles = [
-            dev: 'dev',
+            dev : 'dev',
             test: 'test',
             prod: 'prod'
     ]
@@ -37,25 +38,25 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    implementation 'com.cloudinary:cloudinary-http44:1.38.0'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    // https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44
-    implementation group: 'com.cloudinary', name: 'cloudinary-http44', version: '1.38.0'
-    implementation "org.springframework.boot:spring-boot-starter-log4j2"
+
     modules {
         module("org.springframework.boot:spring-boot-starter-logging") {
             replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
         }
-        // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
-        implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
-
     }
-
 }
 
 tasks.named('test') {
