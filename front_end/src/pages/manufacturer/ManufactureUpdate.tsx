@@ -58,7 +58,7 @@ export default function ManufactureUpdate() {
                 <Row gutter={[24, 8]}>
                     <Col span={12}>
                         <Card className='min-h-full' size='small' title='Manufacturer info'>
-                            <Form.Item name='name' label='Name' rules={[{ required: true }]}>
+                            <Form.Item name='name' label='Name' rules={[{ required: true,message: 'Please input manufacturer name' }]}>
                                 <Input />
                             </Form.Item>
                             <Form.Item name='description' label='Description'>

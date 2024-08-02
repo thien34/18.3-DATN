@@ -30,9 +30,9 @@ export default function ManufactureCreate() {
             <Form {...layout} name='nest-messages' form={form} onFinish={onFinish} initialValues={initialManufacture}>
                 <Row gutter={[24, 8]}>
                     <Col span={12}>
-                        <Card className='min-h-full' size='small' title='Category info'>
-                            <Form.Item   name='name' label='Name' rules={[{ required: true }]}>
-                                <Input />
+                    <Card className='min-h-full' size='small' title='Manufacture Info'>
+                            <Form.Item   name='name' label='Name' rules={[{ required: true, message: 'Please input manufacturer name' }]}>
+                                <Input  placeholder='Manufacturer name'/>
                             </Form.Item>
                             <Form.Item name='description' label='Description'>
                                 <Input.TextArea />

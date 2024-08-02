@@ -19,11 +19,14 @@ const Breadcrumbs: React.FC = () => {
             title: isLastItem ? capitalizeChar(title) : <NavLink to={url}>{capitalizeChar(title)}</NavLink>,
         }
     })
-
+    const labelValue = capitalizeChar(pathSnippets[pathSnippets.length - 1])
     return (
         <Row>
             <Col className='flex items-center gap-2 p-4'>
                 <Breadcrumb items={breadcrumbItems} />
+            </Col>
+            <Col span={24} className='flex items-center pl-4 pb-2 font-medium'>
+                <label>{labelValue}</label>
             </Col>
         </Row>
     )
