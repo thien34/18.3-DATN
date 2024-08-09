@@ -185,6 +185,16 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(StoreException.class)
+    public ResponseEntity<ErrorResponse> handleStoreException(StoreException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(new Date())
+                .status(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .build();
+        return ResponseEntity.status(errorCode.getStatusCode()).body(errorResponse);
+    }
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(BAD_REQUEST)
     @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Bad request", content = {@Content(mediaType = APPLICATION_JSON_VALUE, examples = @ExampleObject(name = "404 Response", summary = "Handle exception when type mismatch occurs", value = """
@@ -253,47 +263,5 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .build();
     }
-    @ExceptionHandler(AlreadyExistsException.class)
-    @ResponseStatus(CONFLICT)
-    @ApiResponses(value = {@ApiResponse(responseCode = "409", description = "Conflict", content = {@Content(mediaType = APPLICATION_JSON_VALUE, examples = @ExampleObject(name = "409 Response", summary = "Handle exception when a resource already exists", value = """
-            {
-              "timestamp": "2024-07-24T07:19:51.110+00:00",
-              "status": 409,
-              "path": "/api/admin/specification-attributes/2",
-              "error": "Conflict",
-              "message": "Product attribute already existed"
-            }
-            """))})})
-    public ErrorResponse handleAlreadyExistsException(AlreadyExistsException e, WebRequest request) {
-        return ErrorResponse.builder()
-                .timestamp(new Date())
-                .status(CONFLICT.value())
-                .path(request.getDescription(false).replace("uri=", ""))
-                .error(CONFLICT.getReasonPhrase())
-                .message(e.getMessage())
-                .build();
-    }
-    @ExceptionHandler(NotExistsException.class)
-    @ResponseStatus(NOT_FOUND)
-    @ApiResponses(value = {@ApiResponse(responseCode = "404", description = "Not Found", content = {@Content(mediaType = "application/json", examples = @ExampleObject(name = "404 Response", summary = "Handle exception when resource does not exist", value = """
-            {
-              "timestamp": "2024-07-24T14:28:17.569+07:00",
-              "status": 404,
-              "path": "/api/v1/...",
-              "error": "Not Found",
-              "message": "Product attribute does not exist"
-            }
-            """))})})
-    public ErrorResponse handleNotExistsException(NotExistsException e, WebRequest request) {
-        return ErrorResponse.builder()
-                .timestamp(new Date())
-                .status(NOT_FOUND.value())
-                .path(request.getDescription(false).replace("uri=", ""))
-                .error(NOT_FOUND.getReasonPhrase())
-                .message(e.getMessage())
-                .build();
-    }
-
-
 
 }
