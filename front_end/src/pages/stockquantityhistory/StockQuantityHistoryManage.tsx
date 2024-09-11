@@ -1,13 +1,11 @@
 import { Table } from 'antd'
 import useStockQuantityHistoryViewModel from './StockQuantity.vm'
-import StockQuantityHistorySearch from './StockQuantityHistorySearch'
 export default function StockQuantityHistoryManage() {
-    const { columns, filter, handleTableChange, handleSearch, listResponse, isLoading } =
+    const { columns, filter, handleTableChange,  listResponse, isLoading } =
         useStockQuantityHistoryViewModel()
 
     return (
         <>
-            <StockQuantityHistorySearch onSearch={handleSearch} />
             {isLoading && <p>Loading ...</p>}
             <div className='bg-[#fff] rounded-lg shadow-md p-6 '>
                 {listResponse && (

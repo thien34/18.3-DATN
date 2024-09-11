@@ -18,6 +18,7 @@ import {
     ProductSpecificationAttributeMappingUpdate,
 } from '@/pages/productSpecificationAttributeMapping'
 import { StockQuantityHistoryManage } from '@/pages/stockquantityhistory'
+import ProductCreate from '@/pages/product/ProductCreate'
 
 const routers = [
     {

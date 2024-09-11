@@ -54,7 +54,7 @@ class ManagerPath {
     static readonly PRODUCT_ATTRIBUTE_MAPPING_ADD = '/admin/products/product-attribute-mapping-add'
     static readonly PRODUCT_ATTRIBUTE_MAPPING_UPDATE = '/admin/products/product-attribute-mapping-update/:id'
 
-    static readonly STOCK_QUANTITY_HISTORY = '/admin/stock-quantity-history'
+    static readonly STOCK_QUANTITY_HISTORY = '/admin/stock-quantity-history/:productId'
     static readonly STOCK_QUANTITY_HISTORY_ADD = '/admin/stock-quantity-history/add'
 
     static readonly SPECIFICATION_ATTRIBUTE_OPTION = '/admin/specification-attribute-options'
