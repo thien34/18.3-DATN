@@ -1,5 +1,6 @@
 package com.example.back_end.core.admin.product.mapper;
 
+import com.example.back_end.core.admin.product.payload.request.ProductRequest;
 import com.example.back_end.core.admin.product.payload.response.ProductFakeResponse;
 import com.example.back_end.core.admin.product.payload.response.ProductResponse;
 import com.example.back_end.entity.Product;
@@ -16,6 +17,8 @@ public interface ProductMapper {
     ProductFakeResponse toDto(Product product);
 
     List<ProductFakeResponse> toDtoList(List<Product> products);
+
+    Product toEntity(ProductRequest productRequest);
 
     List<ProductResponse> toResponseList(List<Product> content);
 

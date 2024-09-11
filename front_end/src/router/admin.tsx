@@ -126,6 +126,11 @@ const routers = [
         element: <ProductUpdate />,
     },
     {
+        path: ManagerPath.PRODUCT_CREATE,
+        layout: 'main',
+        element: <ProductCreate />,
+    },
+    {
         path: ManagerPath.PRODUCT_SPECIFICATION_ATTRIBUTE_MAPPING_ADD,
         layout: 'main',
         element: <ProductSpecificationAttributeMappingCreate />,
