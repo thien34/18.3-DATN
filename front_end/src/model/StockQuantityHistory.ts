@@ -7,7 +7,7 @@ export type StockQuantityHistoryRequest = {
 }
 export type StockQuantityHistoryResponse = {
     id: number
-    productId: number
+    attributesXml: string
     quantityAdjustment: number
     stockQuantity: number
     message: string

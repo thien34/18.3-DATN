@@ -1,9 +1,9 @@
 import { StockQuantityHistoryResponse } from '@/model/StockQuantityHistory'
 import { RequestParams } from '@/utils/FetchUtils'
 import { useState } from 'react'
-import StockQuantityHistoryConfigs from './StockQuantityHistoryConfig'
 import useGetAllApi from '@/hooks/use-get-all-api'
 import getStockQuantityColumns from './StockQuantityColumns'
+import StockQuantityHistoryConfigs from './StockQuantityHistoryConfig'
 
 interface Search extends RequestParams {
     page?: number

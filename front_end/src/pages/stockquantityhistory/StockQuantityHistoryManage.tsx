@@ -1,5 +1,5 @@
-import useStockQuantityHistoryViewModel from './StockQuantity.vm'
 import { Table } from 'antd'
+import useStockQuantityHistoryViewModel from './StockQuantity.vm'
 import StockQuantityHistorySearch from './StockQuantityHistorySearch'
 export default function StockQuantityHistoryManage() {
     const { columns, filter, handleTableChange, handleSearch, listResponse, isLoading } =

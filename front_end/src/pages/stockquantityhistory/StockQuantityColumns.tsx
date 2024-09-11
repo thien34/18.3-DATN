@@ -4,11 +4,25 @@ import { TableColumnsType } from 'antd'
 
 const getStockQuantityColumns = (): TableColumnsType<StockQuantityHistoryResponse> => [
     {
-        width: '25%',
-        title: 'Product ID',
-        dataIndex: 'product',
-        key: 'product',
-        render: (_, record) => <span>{record.productId}</span>,
+        title: 'Attributes Combianation',
+        dataIndex: 'attributesXml',
+        key: 'attributesXml',
+        render: (attributesXml: string) => {
+            const attributes = JSON.parse(attributesXml).attributes
+            return (
+                <div>
+                   {attributes.map((attr: any) => {
+                const key = Object.keys(attr)[0];
+                const value = attr[key];
+                return (
+                    <div key={key}>
+                        <strong>{key ? key.charAt(0).toUpperCase() + key.slice(1).toLowerCase() + ':' : ''}</strong> {value || ''}
+                    </div>
+                );
+            })}
+                </div>
+            )
+        },
     },
     {
         width: '10%',
