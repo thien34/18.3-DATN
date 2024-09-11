@@ -53,27 +53,4 @@ public class StockQuantityHistoryController {
                 .build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseData<Void> update(@PathVariable Long id, @RequestBody @Valid StockQuantityHistoryRequest stockQuantityHistoryRequest) {
-
-        stockQuantityHistoryServices.updateStockQuantityHistory(id, stockQuantityHistoryRequest);
-
-        return ResponseData.<Void>builder()
-                .status(HttpStatus.OK.value())
-                .message("Update a record of StockQuantityHistory successfully")
-                .build();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseData<StockQuantityHistoryResponse> getARecordOfStockQuantityHistory(@PathVariable Long id) {
-
-        StockQuantityHistoryResponse response = stockQuantityHistoryServices.getStockQuantityHistory(id);
-
-        return ResponseData.<StockQuantityHistoryResponse>builder()
-                .status(HttpStatus.OK.value())
-                .message("Get a record of StockQuantityHistory successfully")
-                .data(response)
-                .build();
-    }
-
 }

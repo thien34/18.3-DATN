@@ -15,7 +15,7 @@ public class StockQuantityHistoryResponse {
 
     private Long id;
 
-    private Long productId;
+    private String attributesXml;
 
     private Integer quantityAdjustment;
 

@@ -8,7 +8,6 @@ import com.example.back_end.core.common.PageResponse;
 import com.example.back_end.core.validator.ValidateUtils;
 import com.example.back_end.entity.StockQuantityHistory;
 import com.example.back_end.infrastructure.constant.SortType;
-import com.example.back_end.infrastructure.exception.ResourceNotFoundException;
 import com.example.back_end.infrastructure.utils.PageUtils;
 import com.example.back_end.repository.StockQuantityHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,17 +34,6 @@ public class StockQuantityHistoryServiceImpl implements StockQuantityHistoryServ
     }
 
     @Override
-    public void updateStockQuantityHistory(
-            Long stockQuantityHistoryId,
-            StockQuantityHistoryRequest stockQuantityHistoryRequest) {
-
-        StockQuantityHistory stockQuantityHistory = findStockQuantityHistoryById(stockQuantityHistoryId);
-
-        stockQuantityHistoryMapper.updateStockQuantityHistory(stockQuantityHistoryRequest, stockQuantityHistory);
-        stockQuantityHistoryRepository.save(stockQuantityHistory);
-    }
-
-    @Override
     public PageResponse<List<StockQuantityHistoryResponse>> getAllHistoryOfProduct(
             Long productId,
             Integer pageNo,
@@ -54,31 +42,14 @@ public class StockQuantityHistoryServiceImpl implements StockQuantityHistoryServ
         ValidateUtils.validatePageable(pageNo, pageSize);
 
         Pageable pageable = PageUtils.createPageable(pageNo, pageSize, "id", SortType.DESC.getValue());
-        Page<StockQuantityHistory> stockQuantityHistoryPage = stockQuantityHistoryRepository
+        Page<StockQuantityHistoryResponse> stockQuantityHistoryPage = stockQuantityHistoryRepository
                 .findAll(productId, pageable);
-
-        List<StockQuantityHistoryResponse> stockQuantityHistories = stockQuantityHistoryMapper
-                .mapToDtoList(stockQuantityHistoryPage.getContent());
-
         return PageResponse.<List<StockQuantityHistoryResponse>>builder()
                 .page(stockQuantityHistoryPage.getNumber())
                 .size(stockQuantityHistoryPage.getSize())
                 .totalPage(stockQuantityHistoryPage.getTotalPages())
-                .items(stockQuantityHistories)
+                .items(stockQuantityHistoryPage.getContent().stream().toList())
                 .build();
-    }
-
-    @Override
-    public StockQuantityHistoryResponse getStockQuantityHistory(Long stockQuantityHistoryId) {
-
-        StockQuantityHistory stockQuantityHistory = findStockQuantityHistoryById(stockQuantityHistoryId);
-        return stockQuantityHistoryMapper.mapToDto(stockQuantityHistory);
-    }
-
-    private StockQuantityHistory findStockQuantityHistoryById(Long stockQuantityHistoryId) {
-        return stockQuantityHistoryRepository.findById(stockQuantityHistoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Stock Quantity History with id not found: "
-                        + stockQuantityHistoryId));
     }
 
 }

@@ -12,10 +12,5 @@ public interface StockQuantityHistoryServices {
 
     void createStockQuantityHistory(StockQuantityHistoryRequest stockQuantityHistoryRequest);
 
-    void updateStockQuantityHistory(Long stockQuantityHistoryId, StockQuantityHistoryRequest stockQuantityHistoryRequest);
-
     PageResponse<List<StockQuantityHistoryResponse>> getAllHistoryOfProduct(Long productId, Integer pageNo, Integer pageSize);
-
-    StockQuantityHistoryResponse getStockQuantityHistory(Long stockQuantityHistoryId);
-
 }
