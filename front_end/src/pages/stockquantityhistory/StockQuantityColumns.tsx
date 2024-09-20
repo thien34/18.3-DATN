@@ -9,29 +9,29 @@ const getStockQuantityColumns = (): TableColumnsType<StockQuantityHistoryRespons
         key: 'attributesXml',
         render: (attributesXml: string) => {
             try {
-                const parsedData = JSON.parse(attributesXml); // Thử parse chuỗi JSON
-                const attributes = parsedData.attributes;
-        
-                if (!attributes || !Array.isArray(attributes)) {
-                    // Kiểm tra nếu không phải mảng hoặc không có attributes
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(attributesXml, "text/xml");
+            
+                const attributes = Array.from(xmlDoc.getElementsByTagName('attributes')[0].children);
+                
+                if (!attributes || !Array.isArray(attributes) || attributes.length === 0) {
                     return null;
                 }
-        
+            
                 return (
                     <div>
-                        {attributes.map((attr: any) => {
-                            const key = Object.keys(attr)[0];
-                            const value = attr[key];
+                        {attributes.map((attr) => {
+                            const key = attr.tagName; 
+                            const value = attr.textContent; 
                             return (
                                 <div key={key}>
-                                    <strong>{key ? key.charAt(0).toUpperCase()+ key.slice(1).toLowerCase()  + ':' : ''}</strong> {value || ''}
+                                    <strong>{key ? key.charAt(0).toUpperCase() + key.slice(1).toLowerCase() + ':' : ''}</strong> {value || ''}
                                 </div>
                             );
                         })}
                     </div>
                 );
             } catch (error) {
-                // Nếu JSON.parse() thất bại, không render gì cả
                 return 'Default';
             }
         },

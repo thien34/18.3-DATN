@@ -1,11 +1,15 @@
-import { Table } from 'antd'
+import { Collapse, Table } from 'antd'
 import useStockQuantityHistoryViewModel from './StockQuantity.vm'
+
+
+const { Panel } = Collapse
 export default function StockQuantityHistoryManage() {
     const { columns, filter, handleTableChange,  listResponse, isLoading } =
         useStockQuantityHistoryViewModel()
-
     return (
-        <>
+        <>  
+         <Collapse defaultActiveKey={['1']} className='mb-6'>
+        <Panel header='Stock Quanity History' key='1'>
             {isLoading && <p>Loading ...</p>}
             <div className='bg-[#fff] rounded-lg shadow-md p-6 '>
                 {listResponse && (
@@ -23,6 +27,8 @@ export default function StockQuantityHistoryManage() {
                     />
                 )}
             </div>
+            </Panel>
+        </Collapse>
         </>
     )
 }

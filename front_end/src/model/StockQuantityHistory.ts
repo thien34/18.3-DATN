@@ -1,6 +1,7 @@
 export type StockQuantityHistoryRequest = {
     id?: number
     productId: number
+    productAttributeCombinationId?: number
     quantityAdjustment: number
     stockQuantity: number
     message: string
