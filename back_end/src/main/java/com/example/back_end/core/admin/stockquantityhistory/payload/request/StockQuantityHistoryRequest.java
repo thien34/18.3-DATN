@@ -1,6 +1,7 @@
 package com.example.back_end.core.admin.stockquantityhistory.payload.request;
 
 import com.example.back_end.entity.Product;
+import com.example.back_end.entity.ProductAttributeCombination;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,8 @@ public class StockQuantityHistoryRequest {
     @NotNull(message = " Quantity Adjustment  invalid")
     private Integer quantityAdjustment;
 
+    private Long productAttributeCombinationId;
+
     @Min(value = 0, message = " Stock Quantity must be greater than or equal to 0")
     private Integer stockQuantity;
 
@@ -36,6 +39,15 @@ public class StockQuantityHistoryRequest {
         Product product = new Product();
         product.setId(productId);
         return product;
+    }
+
+    public ProductAttributeCombination getProductAttributeCombination() {
+        if (productAttributeCombinationId == null) {
+            return null;
+        }
+        ProductAttributeCombination productAttributeCombination = new ProductAttributeCombination();
+        productAttributeCombination.setId(productAttributeCombinationId);
+        return productAttributeCombination;
     }
 
 }
