@@ -140,27 +140,27 @@ public class ProductAttributeValueServiceImpl implements ProductAttributeValueSe
 
         productAttributeValueRepository.save(productAttributeValue);
 
-        List<ProductAttributeCombination> productAttributeCombination = productAttributeCombinationRepository
-                .findByProduct(productAttributeValue.getProductAttributeMapping().getProduct());
-
-        for(ProductAttributeCombination x : productAttributeCombination) {
-
-            String attributesXml = x.getAttributesXml();
-
-            Optional<ProductAttribute> productAttribute = productAttributeRepository.findById(productAttributeValue.getProductAttributeMapping().getProductAttribute().getId());
-
-            String attributeName = productAttribute.get().getName();
-            String newValue = request.getName();
-            JsonObject jsonObject = JsonParser.parseString(attributesXml).getAsJsonObject();
-            JsonArray attributes = jsonObject.getAsJsonArray("attributes");
-            if (containsAttribute(attributes, attributeName)) {
-                attributesXml = updateAttributeValueInJson(attributesXml, attributeName, newValue);
-            }
-
-            x.setAttributesXml(attributesXml);
-            productAttributeCombinationRepository.save(x);
-
-        }
+//        List<ProductAttributeCombination> productAttributeCombination = productAttributeCombinationRepository
+//                .findByProduct(productAttributeValue.getProductAttributeMapping().getProduct());
+//
+//        for(ProductAttributeCombination x : productAttributeCombination) {
+//
+//            String attributesXml = x.getAttributesXml();
+//
+//            Optional<ProductAttribute> productAttribute = productAttributeRepository.findById(productAttributeValue.getProductAttributeMapping().getProductAttribute().getId());
+//
+//            String attributeName = productAttribute.get().getName();
+//            String newValue = request.getName();
+//            JsonObject jsonObject = JsonParser.parseString(attributesXml).getAsJsonObject();
+//            JsonArray attributes = jsonObject.getAsJsonArray("attributes");
+//            if (containsAttribute(attributes, attributeName)) {
+//                attributesXml = updateAttributeValueInJson(attributesXml, attributeName, newValue);
+//            }
+//
+//            x.setAttributesXml(attributesXml);
+//            productAttributeCombinationRepository.save(x);
+//
+//        }
 
         if (request.getProductAttributeValuePictureRequests() != null) {
             Map<Long, List<ProductAttributeValuePictureRequest>> picturesMap = Map.of(productAttributeValue.getId(),

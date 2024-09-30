@@ -34,4 +34,6 @@ public class ProductAttributeValueRequest {
 
     private List<ProductAttributeValuePictureRequest> productAttributeValuePictureRequests;
 
+    private Long productId;
+
 }

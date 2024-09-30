@@ -1,12 +1,13 @@
 import useCreateApi from '@/hooks/use-create-api'
-import { ProductAttributeCombinationRequest } from '../../model/ProductAttributeCombination'
-import { Form, FormProps } from 'antd'
-import ProductAtbCombinationsConfig from './ProductAtbCombinationsConfig'
-import { useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
 import useDeleteByIdApi from '@/hooks/use-delete-by-id-api'
+import { useQueryClient } from '@tanstack/react-query'
+import { Form, FormProps } from 'antd'
+import { useState } from 'react'
+import { AttributeItemRequest, ProductAttributeCombinationRequest } from '../../model/ProductAttributeCombination'
+import ProductAtbCombinationsConfig from './ProductAtbCombinationsConfig'
 
 export interface ProductAtbMapping {
+    id: number
     attName: string
     attributeControlTypeId: string
     isRequired: boolean
@@ -32,6 +33,7 @@ function useProductAtbCombinationsViewModel() {
         gtin: '',
         overriddenPrice: 0,
         pictureIds: [],
+        attributeItemResponses: [],
     }
 
     const queryClient = useQueryClient()
@@ -42,29 +44,20 @@ function useProductAtbCombinationsViewModel() {
     const { mutate: deleteApi } = useDeleteByIdApi<number>(ProductAtbCombinationsConfig.resourceUrl)
 
     const handleCreate = async (values: ProductAttributeCombinationRequest) => {
-        const attributes = Object.keys(values)
-            .filter(
-                (key) =>
-                    key !== 'stockQuantity' &&
-                    key !== 'allowOutOfStockOrders' &&
-                    key !== 'sku' &&
-                    key !== 'manufacturerPartNumber' &&
-                    key !== 'gtin' &&
-                    key !== 'overriddenPrice' &&
-                    key !== 'minStockQuantity' &&
-                    key !== 'productId' &&
-                    key !== 'pictureIds' &&
-                    key !== 'id' &&
-                    key !== '',
-            )
-            .map((key) => ({ [key]: values[key], id: values.id })) // Thêm id vào đây
-
-        const attributesXml = JSON.stringify({ attributes })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const attributeItemRequests: AttributeItemRequest[] = Object.keys(values as any)
+            .filter((key) => !isNaN(Number(key)))
+            .map((key) => ({
+                productId: 16,
+                attributeId: Number(key),
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                itemId: (values as any)[key],
+            }))
 
         const productAttributeCombination = {
             ...values,
-            attributesXml,
             productId: 16,
+            attributeItemRequests: attributeItemRequests,
         }
 
         return new Promise<void>((resolve, reject) => {
@@ -110,7 +103,6 @@ function useProductAtbCombinationsViewModel() {
     }
 
     const handleOpenModal = () => {
-        form.resetFields()
         setSelectedRecord(null)
         setOpen(true)
     }

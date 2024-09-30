@@ -21,6 +21,7 @@ export type ProductAttributeValueRequest = {
     isPreSelected: boolean
     displayOrder: number
     productAttributeValuePictureRequests: ProductAttributeValuePictureRequest[]
+    productId: number
 }
 
 export type ProductAttributeValueResponse = {

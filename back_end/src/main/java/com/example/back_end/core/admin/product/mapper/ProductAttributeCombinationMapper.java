@@ -1,6 +1,7 @@
 package com.example.back_end.core.admin.product.mapper;
 
 import com.example.back_end.core.admin.product.payload.request.ProductAttributeCombinationRequest;
+import com.example.back_end.core.admin.product.payload.request.ProductAttributeCombinationRequestV2;
 import com.example.back_end.core.admin.product.payload.response.ProductAttributeCombinationResponse;
 import com.example.back_end.entity.ProductAttributeCombination;
 import org.mapstruct.Mapper;
@@ -19,5 +20,8 @@ public interface ProductAttributeCombinationMapper {
     ProductAttributeCombinationResponse toDto(ProductAttributeCombination entity);
 
     void updateEntityFromRequest(@MappingTarget ProductAttributeCombination existingCombination, ProductAttributeCombinationRequest request);
+
+    @Mapping(source = "productId", target = "product.id")
+    ProductAttributeCombination toEntity(ProductAttributeCombinationRequestV2 dto);
 
 }

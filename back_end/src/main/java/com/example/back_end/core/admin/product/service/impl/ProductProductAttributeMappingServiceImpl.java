@@ -11,17 +11,23 @@ import com.example.back_end.core.admin.product.service.ProductProductAttributeMa
 import com.example.back_end.core.common.PageResponse;
 import com.example.back_end.entity.Product;
 import com.example.back_end.entity.ProductAttribute;
+import com.example.back_end.entity.ProductAttributeCombination;
 import com.example.back_end.entity.ProductAttributeValue;
 import com.example.back_end.entity.ProductAttributeValuePicture;
 import com.example.back_end.entity.ProductProductAttributeMapping;
 import com.example.back_end.infrastructure.constant.SortType;
 import com.example.back_end.infrastructure.exception.ResourceNotFoundException;
 import com.example.back_end.infrastructure.utils.PageUtils;
+import com.example.back_end.repository.ProductAttributeCombinationRepository;
 import com.example.back_end.repository.ProductAttributeRepository;
 import com.example.back_end.repository.ProductAttributeValuePictureRepository;
 import com.example.back_end.repository.ProductAttributeValueRepository;
 import com.example.back_end.repository.ProductProductAttributeMappingRepository;
 import com.example.back_end.repository.ProductRepository;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +49,7 @@ public class ProductProductAttributeMappingServiceImpl implements ProductProduct
     private final ProductAttributeValuePictureRepository productAttributeValuePictureRepository;
     private final ProductAttributeValueService productAttributeValueService;
     private final ProductAttributeValueMapper productAttributeValueMapper;
+    private final ProductAttributeCombinationRepository productAttributeCombinationRepository;
 
     @Override
     public PageResponse<List<ProductProductAttributeMappingResponse>> getProductProductAttributeMappings(Long productId, int pageNo, int pageSize) {
@@ -120,13 +128,43 @@ public class ProductProductAttributeMappingServiceImpl implements ProductProduct
     @Transactional
     public void updateProductProductAttributeMapping(Long id, ProductProductAttributeMappingRequest request) {
 
-        getMappingOrThrow(id);
+        ProductProductAttributeMapping existingEntity = getMappingOrThrow(id);
         getProductOrThrow(request.getProductId());
         validateProductAttribute(request.getProductAttributeId());
 
-        ProductProductAttributeMapping existingEntity = getMappingOrThrow(id);
+        // Kiểm tra nếu ProductAttribute thay đổi
         if (!existingEntity.getProductAttribute().getId().equals(request.getProductAttributeId())) {
             checkProductAttributeExits(request.getProductAttributeId(), request.getProductId());
+        }
+
+        Optional<Product> productOptional = productRepository.findById(request.getProductId());
+        if (!productOptional.isPresent()) {
+            throw new IllegalArgumentException("Product not found with id: " + request.getProductId());
+        }
+
+        Product product = productOptional.get();
+        List<ProductAttributeCombination> productAttributeCombination = productAttributeCombinationRepository
+                .findByProduct(product);
+
+        Optional<ProductAttribute> productAttributeOptional = productAttributeRepository.findById(request.getProductAttributeId());
+        if (!productAttributeOptional.isPresent()) {
+            throw new IllegalArgumentException("Product attribute not found with id: " + request.getProductAttributeId());
+        }
+
+        ProductAttribute productAttribute = productAttributeOptional.get();
+        String attributeName = productAttribute.getName();
+
+        for (ProductAttributeCombination combination : productAttributeCombination) {
+            String attributesXml = combination.getAttributesXml();
+            JsonObject jsonObject = JsonParser.parseString(attributesXml).getAsJsonObject();
+            JsonArray attributes = jsonObject.getAsJsonArray("attributes");
+
+            if (containsAttribute(attributes, attributeName)) {
+                attributesXml = updateAttributeNameJson(attributesXml, attributeName, productAttribute.getName());
+            }
+
+            combination.setAttributesXml(attributesXml);
+            productAttributeCombinationRepository.save(combination);
         }
 
         ProductProductAttributeMapping attributeMapping = productProductAttributeMappingMapper.toEntity(request);
@@ -135,6 +173,47 @@ public class ProductProductAttributeMappingServiceImpl implements ProductProduct
         if (request.getProductAttributeValueRequests() != null) {
             productAttributeValueService.createProductAttributeValues(request.getProductAttributeValueRequests(), id);
         }
+    }
+
+    private String updateAttributeNameJson(String currentXml, String oldAttributeName, String newAttributeName) {
+        JsonObject jsonObject = JsonParser.parseString(currentXml).getAsJsonObject();
+        JsonArray attributes = jsonObject.getAsJsonArray("attributes");
+
+        String lowerCaseOldAttributeName = oldAttributeName.toLowerCase();
+        String lowerCaseNewAttributeName = newAttributeName.toLowerCase();
+
+        for (JsonElement element : attributes) {
+            if (element.isJsonObject()) {
+                JsonObject attribute = element.getAsJsonObject();
+
+                for (String key : attribute.keySet()) {
+                    if (key.toLowerCase().equals(lowerCaseOldAttributeName)) {
+                        String currentValue = attribute.get(key).getAsString();
+                        attribute.remove(key);
+                        attribute.addProperty(newAttributeName, currentValue);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return jsonObject.toString();
+    }
+
+    private boolean containsAttribute(JsonArray attributes, String attributeName) {
+        String lowerCaseAttributeName = attributeName.toLowerCase();
+        for (JsonElement element : attributes) {
+            if (element.isJsonObject()) {
+                JsonObject attribute = element.getAsJsonObject();
+
+                for (String key : attribute.keySet()) {
+                    if (key.toLowerCase().equals(lowerCaseAttributeName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override

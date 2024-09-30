@@ -1,6 +1,7 @@
 package com.example.back_end.core.admin.product.controller;
 
 import com.example.back_end.core.admin.product.payload.request.ProductAttributeCombinationRequest;
+import com.example.back_end.core.admin.product.payload.request.ProductAttributeCombinationRequestV2;
 import com.example.back_end.core.admin.product.payload.response.ProductAttributeCombinationResponse;
 import com.example.back_end.core.admin.product.service.ProductAttributeCombinationService;
 import com.example.back_end.core.common.ResponseData;
@@ -23,16 +24,16 @@ public class ProductAttributeCombinationController {
 
     private final ProductAttributeCombinationService productAttributeCombinationService;
 
-    @PostMapping
-    public ResponseData<Void> create(@RequestBody ProductAttributeCombinationRequest request) {
-
-        productAttributeCombinationService.saveOrUpdateProductAttributeCombination(request);
-
-        return ResponseData.<Void>builder()
-                .status(HttpStatus.OK.value())
-                .message("Add product combination success")
-                .build();
-    }
+//    @PostMapping
+//    public ResponseData<Void> create(@RequestBody ProductAttributeCombinationRequest request) {
+//
+//        productAttributeCombinationService.saveOrUpdateProductAttributeCombination(request);
+//
+//        return ResponseData.<Void>builder()
+//                .status(HttpStatus.OK.value())
+//                .message("Add product combination success")
+//                .build();
+//    }
 
     @GetMapping("/product/{productId}")
     public ResponseData<List<ProductAttributeCombinationResponse>> findByProductId(
@@ -53,6 +54,17 @@ public class ProductAttributeCombinationController {
         return ResponseData.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .message("Delete product combination success")
+                .build();
+    }
+
+    @PostMapping
+    public ResponseData<Void> create(@RequestBody ProductAttributeCombinationRequestV2 request) {
+
+        productAttributeCombinationService.insertV2(request);
+
+        return ResponseData.<Void>builder()
+                .status(HttpStatus.OK.value())
+                .message("Add product combination success")
                 .build();
     }
 

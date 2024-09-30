@@ -2,6 +2,7 @@
 import AppActions from '@/constants/AppActions'
 import useGetByIdApi from '@/hooks/use-get-by-id-api'
 import {
+    AttributeItemResponse,
     ProductAttributeCombinationRequest,
     ProductAttributeCombinationResponse,
 } from '@/model/ProductAttributeCombination'
@@ -15,18 +16,20 @@ export default function ProductAtbCombinationsManage() {
     const columns = [
         {
             title: 'Attributes',
-            dataIndex: 'attributesXml',
-            key: 'attributesXml',
-            render: (attributesXml: string) => {
-                const attributes = JSON.parse(attributesXml).attributes
+            dataIndex: 'attributeItemResponses',
+            key: 'attributeItemResponses',
+            width: '35%',
+            render: (attributeItemResponses: AttributeItemResponse[]) => {
                 return (
                     <div>
-                        {attributes.map((attr: any) => {
-                            const key = Object.keys(attr)[0]
-                            const value = attr[key]
+                        {attributeItemResponses.map((attr: AttributeItemResponse) => {
                             return (
-                                <div key={key}>
-                                    <strong>{key ? key.toUpperCase() + ':' : ''}</strong> {value || ''}
+                                <div key={attr.id}>
+                                    {attr.attributeName && (
+                                        <>
+                                            <strong>{attr.attributeName + ':'}</strong> {attr.itemName}
+                                        </>
+                                    )}{' '}
                                 </div>
                             )
                         })}
@@ -107,16 +110,12 @@ export default function ProductAtbCombinationsManage() {
         16,
     )
 
-    const transformedData: ProductAttributeCombinationRequest[] | undefined = data?.map((item) => ({
-        ...item,
-        attributeItemRequests: item.attributeItemRequests || [], // Ensure this property exists
-    }))
-
     const { open, setOpen, handleDelete, handleEdit, selectedRecord, handleOpenModal } =
         useProductAtbCombinationsViewModel()
+
     return (
         <div className='bg-[#fff] rounded-lg shadow-md p-6'>
-            <Table bordered dataSource={transformedData} columns={columns} />
+            <Table bordered dataSource={data} columns={columns} />
             <div className='bg-[#d4d2d2c0] h-24 flex  items-center  pl-5 rounded-lg'>
                 <Button type='primary' onClick={() => handleOpenModal()}>
                     Add combination

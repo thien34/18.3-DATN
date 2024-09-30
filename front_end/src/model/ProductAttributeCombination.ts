@@ -8,10 +8,17 @@ export interface ProductAttributeCombinationRequest {
     manufacturerPartNumber: string
     gtin: string
     pictureIds: []
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any
+    attributeItemRequests: AttributeItemRequest[]
 }
+
+export interface AttributeItemRequest {
+    productId: number
+    attributeId: number
+    itemId: number
+}
+
 export interface ProductAttributeCombinationResponse {
+    attributeItemRequests: never[]
     id: number
     stockQuantity?: number
     minStockQuantity?: number
@@ -23,4 +30,14 @@ export interface ProductAttributeCombinationResponse {
     pictureUrl: string
     attributesXml: string
     pictureIds: []
+    attributeItemResponses: AttributeItemResponse[]
+}
+
+export interface AttributeItemResponse {
+    id: number | null
+    productId: number | null
+    attributeId: number
+    attributeName: string
+    itemId: number
+    itemName: string
 }

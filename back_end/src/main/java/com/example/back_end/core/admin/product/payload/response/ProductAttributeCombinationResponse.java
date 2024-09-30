@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Setter
 @Getter
@@ -28,5 +29,7 @@ public class ProductAttributeCombinationResponse {
     private String pictureUrl;
 
     private String manufacturerPartNumber;
+
+    private List<AttributeItemResponse> attributeItemResponses;
 
 }

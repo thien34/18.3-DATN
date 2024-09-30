@@ -1,21 +1,21 @@
+import useGetByIdApi from '@/hooks/use-get-by-id-api'
+import { ProductAttributeCombinationRequest } from '@/model/ProductAttributeCombination'
 import {
     Button,
     Card,
+    Checkbox,
+    Form,
     FormProps,
     Image,
+    Input,
     InputNumber,
     Modal,
     Radio,
     Select,
     Typography,
-    Checkbox,
-    Form,
-    Input,
 } from 'antd'
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import useProductAtbCombinationsViewModel, { ProductAtbMapping } from './ProductAtbCombinations.vm'
-import { ProductAttributeCombinationRequest } from '@/model/ProductAttributeCombination'
-import useGetByIdApi from '@/hooks/use-get-by-id-api'
 import ProductAtbCombinationsConfig from './ProductAtbCombinationsConfig'
 const { Text } = Typography
 
@@ -30,7 +30,7 @@ export default function ProductAtbCombinationsModal({ isModalOpen, selectedRecor
 
     const { handleCreate, onFinishFailed, initialValues, error } = useProductAtbCombinationsViewModel()
     const handleCancel = () => {
-        //   form.resetFields()
+        // form.resetFields()
         setIsModalOpen(false)
     }
 
@@ -39,31 +39,25 @@ export default function ProductAtbCombinationsModal({ isModalOpen, selectedRecor
         ProductAtbCombinationsConfig.resourceUrlByProductIdMapping,
         16,
     )
-    useEffect(() => {
-        if (selectedRecord) {
-            const attributes = JSON.parse(selectedRecord.attributesXml).attributes.reduce(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (acc: any, attr: any) => ({ ...acc, ...attr }),
-                {},
-            )
-            form.setFieldsValue({ ...selectedRecord, ...attributes })
-        } else {
-            form.resetFields() // Ensure form is reset if no record is selected
-        }
-    }, [selectedRecord, form])
+
+    const initialValuesToUse = selectedRecord ? { ...initialValues, ...selectedRecord } : initialValues
+
     const renderFormItems = () => {
         return (
             data &&
             data.map((item) => {
-                const fieldName = item.attName.toLowerCase().replace(' ', '_')
+                const fieldName = item.attName
+                const initialValue = initialValuesToUse?.attributeItemResponses[0]?.itemId
                 switch (item.attributeControlTypeId) {
                     case 'DROPDOWN':
-                        initialValues[fieldName] = item?.productAttributeValueResponses[0]?.name
+                        initialValues[fieldName] = initialValuesToUse?.attributeItemResponses[0]?.itemId
+
                         return (
                             <Form.Item
                                 key={item.attName}
                                 label={item.attName}
-                                name={item.attName.toLowerCase().replace(' ', '_')}
+                                name={item.id}
+                                initialValue={initialValue}
                                 rules={
                                     item.isRequired
                                         ? [{ required: true, message: `Please select a ${item.attName.toLowerCase()}` }]
@@ -73,7 +67,7 @@ export default function ProductAtbCombinationsModal({ isModalOpen, selectedRecor
                                 {item.productAttributeValueResponses.length > 0 && (
                                     <Select>
                                         {item.productAttributeValueResponses.map((attr) => (
-                                            <Select.Option key={attr.id} value={attr.name}>
+                                            <Select.Option key={attr.id} value={attr.id}>
                                                 {attr.name}
                                             </Select.Option>
                                         ))}
@@ -86,7 +80,8 @@ export default function ProductAtbCombinationsModal({ isModalOpen, selectedRecor
                             <Form.Item
                                 key={item.attName}
                                 label={item.attName}
-                                name={item.attName.toLowerCase().replace(' ', '_')}
+                                name={item.id}
+                                initialValue={initialValue}
                                 rules={
                                     item.isRequired
                                         ? [{ required: true, message: `Please select a ${item.attName.toLowerCase()}` }]
@@ -96,7 +91,7 @@ export default function ProductAtbCombinationsModal({ isModalOpen, selectedRecor
                                 {item.productAttributeValueResponses.length > 0 && (
                                     <Radio.Group>
                                         {item.productAttributeValueResponses.map((attr) => (
-                                            <Radio key={attr.id} value={attr.name}>
+                                            <Radio key={attr.id} value={attr.id}>
                                                 {attr.name}
                                             </Radio>
                                         ))}
@@ -142,7 +137,7 @@ export default function ProductAtbCombinationsModal({ isModalOpen, selectedRecor
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
                 style={{ maxWidth: 600 }}
-                initialValues={initialValues}
+                initialValues={initialValuesToUse}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete='off'

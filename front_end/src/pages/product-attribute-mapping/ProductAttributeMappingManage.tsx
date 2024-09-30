@@ -1,7 +1,7 @@
 import { Collapse, Tabs } from 'antd'
-import ProductAttributeMappingConfigs from './ProductAttributeMappingConfigs'
+import { ProductAtbCombinationsManage } from '../product-attribute-combinationsV2'
 import ProductAttributeMapping from './ProductAttributeMapping'
-import { ProductAtbCombinationsManage } from '../product-attribute-combinations'
+import ProductAttributeMappingConfigs from './ProductAttributeMappingConfigs'
 
 export default function ProductAttributeMappingManage() {
     return (
